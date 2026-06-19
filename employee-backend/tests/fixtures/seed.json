@@ -1,0 +1,172 @@
+{
+  "users": [
+    {
+      "name": "HR Admin",
+      "email": "admin@test.com",
+      "password": "Admin123",
+      "role": "admin",
+      "employeeType": "Manager",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Rahul Kumar",
+      "email": "rahul.kumar@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Site Engineer",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Priya Sharma",
+      "email": "priya.sharma@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Mason",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Arjun Singh",
+      "email": "arjun.singh@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Welder",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Sneha Reddy",
+      "email": "sneha.reddy@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Electrician",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Vikram Patel",
+      "email": "vikram.patel@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Safety Officer",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Kavya Nair",
+      "email": "kavya.nair@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Payroll Executive",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Suresh Yadav",
+      "email": "suresh.yadav@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "HR Executive",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Neha Gupta",
+      "email": "neha.gupta@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Project Coordinator",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Ravi Teja",
+      "email": "ravi.teja@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Carpenter",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Divya Menon",
+      "email": "divya.menon@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Supervisor",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Akash Verma",
+      "email": "akash.verma@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Store Keeper",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Pooja Das",
+      "email": "pooja.das@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Surveyor",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Manoj Kumar",
+      "email": "manoj.kumar@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Foreman",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Harsha Reddy",
+      "email": "harsha.reddy@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Operator",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Lakshmi Devi",
+      "email": "lakshmi.devi@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Helper",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Rohit Jain",
+      "email": "rohit.jain@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Technician",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Meghana Rao",
+      "email": "meghana.rao@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Manager",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Satish Kumar",
+      "email": "satish.kumar@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Accountant",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Keerthi Reddy",
+      "email": "keerthi.reddy@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "Civil Engineer",
+      "mustChangePassword": false
+    },
+    {
+      "name": "Nikhil Sharma",
+      "email": "nikhil.sharma@test.com",
+      "password": "Pass123",
+      "role": "employee",
+      "employeeType": "QA Inspector",
+      "mustChangePassword": false
+    }
+  ]
+}

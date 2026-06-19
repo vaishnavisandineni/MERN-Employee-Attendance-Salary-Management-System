@@ -27,15 +27,42 @@ const userSchema = new mongoose.Schema({
   employeeType: {
     type: String,
     enum: [
-      "Sr. Faculty",
-      "Faculty",
-      "Project Manager",
-      "Associate",
+
+      "Site Engineer",
+      "Mason",
+      "Welder",
+      "Electrician",
+      "Safety Officer",
+      "Payroll Executive",
+      "HR Executive",
+      "Project Coordinator",
+      "Carpenter",
+      "Supervisor",
+      "Store Keeper",
+      "Surveyor",
+      "Foreman",
+      "Operator",
+      "Helper",
+      "Technician",
+      "Manager",
       "Accountant",
-      "Sr. Accountant",
+      "Civil Engineer",
+      "QA Inspector"
+
     ],
-    default: "Faculty",
+    default: "Helper"
   },
+
+  designation:{
+    type:String,
+    default:""
+  },
+  active: {
+    type: Boolean,
+    default: true,
+  },
+
+  
 
   mustChangePassword: {
     type: Boolean,

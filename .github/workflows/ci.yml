@@ -1,0 +1,155 @@
+name: QA Pipeline (HRMS)
+
+# Triggers: every push to main AND every Pull Request targeting main.
+# This means you cannot accidentally merge broken code.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    # Start a real MongoDB service so the Node server and Pytest can connect to it
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.runCommand({ping:1})'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+    # Step 1: Get the code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Node.js for the backend and frontend
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        cache-dependency-path: |
+          employee-backend/package-lock.json
+          employee-frontend/package-lock.json
+
+    # Step 3: Install all dependencies
+    - name: Install Backend Dependencies
+      run: npm ci
+      working-directory: employee-backend
+
+    - name: Install Frontend Dependencies
+      run: npm ci
+      working-directory: employee-frontend
+
+    # Step 4: Lint check — catches obvious syntax errors before we even run tests
+    # We use || true so a lint warning doesn't kill the whole pipeline
+    - name: Run Linter
+      run: npx eslint . --ext .js || true
+      working-directory: employee-backend
+
+    # Step 5: Seed the database so tests have real data to work with
+    - name: Seed Database
+      run: node scripts/seed.js
+      working-directory: employee-backend
+      env:
+        MONGO_URI: mongodb://localhost:27017/employee_management
+        JWT_SECRET: test_jwt_secret_for_ci
+
+    # Step 6: Start the backend server in the background for all subsequent tests
+    - name: Start Backend Server
+      run: |
+        node server.js &
+        # Wait up to 15 seconds for the server to become ready
+        for i in {1..15}; do
+          curl -s http://localhost:8080/api/health && break || sleep 1
+        done
+      working-directory: employee-backend
+      env:
+        MONGO_URI: mongodb://localhost:27017/employee_management
+        JWT_SECRET: test_jwt_secret_for_ci
+        PORT: 8080
+
+    # Step 7: SMOKE TESTS — must pass in under 30 seconds
+    # These are the fastest check: does the app even start? Is the DB connected?
+    # If this fails, everything below is pointless — we fail-fast immediately.
+    - name: Run Smoke Tests (< 30 seconds)
+      run: npm run test tests/smoke/smoke.test.js -- --forceExit
+      working-directory: employee-backend
+      env:
+        MONGO_URI: mongodb://localhost:27017/employee_management
+
+    # Step 8: REGRESSION TESTS — check the critical dependency chains
+    # e.g. if salary changes, does the payslip update? If a worker is deleted, does payroll crash?
+    - name: Run Regression Tests
+      run: npm run test tests/regression/ -- --forceExit
+      working-directory: employee-backend
+      env:
+        MONGO_URI: mongodb://localhost:27017/employee_management
+
+    # Step 9: Setup Python for the Pytest API suite
+    - name: Setup Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Python Dependencies
+      run: pip install -r requirements.txt
+      working-directory: employee-backend
+
+    # Step 10: PYTEST API TESTS — validate all 4 categories
+    # Happy path, validation, business rules, error responses
+    # Generates a JUnit XML report so GitHub Actions can display test results
+    - name: Run Pytest API Validations
+      run: |
+        pytest tests/api/ -v \
+          --junitxml=pytest-results.xml \
+          --tb=short
+      working-directory: employee-backend
+      env:
+        MONGO_URI: mongodb://localhost:27017/employee_management
+        BASE_URL: http://localhost:8080/api
+
+    # Step 11: Publish the Pytest results so reviewers can see test pass/fail inline
+    - name: Publish Pytest Test Report
+      uses: dorny/test-reporter@v1
+      if: always()  # Run even if previous steps failed — so we see what broke
+      with:
+        name: Pytest API Results
+        path: employee-backend/pytest-results.xml
+        reporter: java-junit
+
+    # Step 12: PLAYWRIGHT E2E TESTS — the full user journey
+    # These are the slowest, so they run last. Only on Pull Requests, not every commit.
+    - name: Install Playwright Browsers
+      if: github.event_name == 'pull_request'
+      run: npx playwright install --with-deps chromium
+      working-directory: employee-backend
+
+    - name: Start Frontend for E2E
+      if: github.event_name == 'pull_request'
+      run: |
+        npm start &
+        sleep 10
+      working-directory: employee-frontend
+      env:
+        REACT_APP_API_URL: http://localhost:8080
+
+    - name: Run E2E Tests
+      if: github.event_name == 'pull_request'
+      run: npx playwright test tests/e2e/ --reporter=html
+      working-directory: employee-backend
+
+    - name: Upload E2E Report
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: playwright-report
+        path: employee-backend/playwright-report/
+        retention-days: 7
