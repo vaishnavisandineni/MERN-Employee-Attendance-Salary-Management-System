@@ -7,12 +7,13 @@ const {
 } = require("../controllers/salaryController");
 
 const Salary = require("../models/Salary");
-const User = require("../models/User"); 
+const User = require("../models/User");
+const { verifyToken } = require("../middleware/authMiddleware");
 
-router.get("/history", getSalaryHistory);
+router.get("/history", verifyToken, getSalaryHistory);
 
 // Admin: Get all users' salary history
-router.get("/all", getAllSalaryHistories);
+router.get("/all", verifyToken, getAllSalaryHistories);
 
 // Admin: Mark salary as paid
 router.put("/:id/pay", async (req, res) => {
